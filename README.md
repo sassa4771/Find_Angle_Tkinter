@@ -48,7 +48,7 @@ CPU:Corei7<br>
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/Anaconda%20Environment<br><br>
 
 ## ③ツールの使い方とTkinterの機能紹介
-【ファイルを開く】<br>
+【1.ファイルを開く】<br>
 まずは、ファイルを開きましょう。<br><br>
 
 このTkinter機能は、こちらのスクリプトを参考にしてください。<br>
@@ -58,7 +58,7 @@ https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/Anaconda%20Environment
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex1.gif" alt="ファイルを開く" title="Tkinterでファイルを開く"><br><br>
 <br>
 
-【選択した動画の閲覧】<br>
+【2.選択した動画の閲覧】<br>
 no filterを選択して「Show Selected Video」を押すと表示することができる。<br><br>
 
 このTkinter機能は、こちらのスクリプトを参考にしてください。<br>
@@ -70,7 +70,7 @@ no filterを選択して「Show Selected Video」を押すと表示すること�
 <br>
 
 
-【動画の縮小をする】<br>
+【3.動画の縮小をする】<br>
 ただこのままだと、元の動画が大きすぎるのでリサイズをします。<br>
 スライダーを利用して、縮小割合を決定します。<br><br>
 
@@ -82,7 +82,7 @@ no filterを選択して「Show Selected Video」を押すと表示すること�
 <br>
 
 
-【フィルター処理した動画の閲覧】<br>
+【4.フィルター処理した動画の閲覧】<br>
 ラジオボタンで・フィルターなし・グレースケール・二値化の処理を選択して表示することができます。<br><br>
 ※二値化処理したものを輪郭抽出で自動追従しているため、背景が黒で、目標点が白でないといけない。<br>
 フィルターに関して詳しくは、eyetrackのところで説明しています。<br>
@@ -96,7 +96,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <br>
 
 <br>
-【動画の範囲トリミングする】<br>
+【5.動画の範囲トリミングする】<br>
 自動トラッキングしたい点（白色のみトラッキング可能。背景は黒色がベスト）が移動する範囲をトリミングしましょう。<br>
 ※この処理は、目標点の追従する際に範囲を絞ってノイズが入るのを防ぐために行います。<br><br>
 
@@ -107,7 +107,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex5.gif" alt="画像をトリミングする" title="Tkinterで動画の範囲トリミング"><br><br>
 <br>
 
-【目標点を追従できているかを確認する】<br>
+【6.目標点を追従できているかを確認する】<br>
 「Check Cut Range」を押して、トリミングした範囲で動画を表示します。<br>
 「no filter」を選択した場合、目標点が赤枠で囲われていることを確認できる。<br>
 この赤枠がほかの箇所にも表示されている場合は、トリミング範囲の修正が必要。または、動画の撮り直しや撮影環境の見直しが必要です。<br>
@@ -119,7 +119,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex6.gif" alt="トリミングした動画を表示する" title="Tkinterでトリミング動画の表示"><br><br>
 <br>
 
-【児童追従が失敗する場合の例】<br>
+【7.児童追従が失敗する場合の例】<br>
 仮にトリミング範囲を大きくしてみましょう。<br>
 そうすると、目標点と思われる場所がプログラム上で判断できなくなってしまうため、手にも赤枠が表示されているのがわかると思います。<br>
 これを避けるために、目標点の自動追従範囲を絞る必要があります。<br><br>
@@ -128,7 +128,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <br>
 
 
-【回転中心を決定する】<br>
+【8.回転中心を決定する】<br>
 次に、回転中心（Pivot）を決定します。<br>
 「Put Pivot On Image」を押して、マウスをドラックすることで赤点を操作できます。<br>
 その赤点を回転中心におきましょう。<br>
@@ -142,7 +142,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <br>
 
 
-【角度表示を行う】<br>
+【9.角度表示を行う】<br>
 ここまで出来たら、最後の処理を行いましょう。<br>
 「Make Frame Image」を押すことで、処理された動画を確認することができます。<br><br>
 
@@ -154,7 +154,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <br>
 
 
-【作成した動画を保存】<br>
+【10.作成した動画を保存】<br>
 「Video Save」にチェックを入れて、「Check Cut Range」を押すと、動画を保存できます。<br>
 pythonのファイルがある場所に、今の日付時間のフォルダーを作成して、その中に保存されます。<br><br>
 
@@ -167,7 +167,7 @@ pythonのファイルがある場所に、今の日付時間のフォルダー�
 <br>
 
 
-【作成した動画をフレームごとに分けて画像で保存】<br>
+【11.作成した動画をフレームごとに分けて画像で保存】<br>
 「Frame Image Save」にチェックを入れて、「Check Cut Range」を押すと、動画をフレームごとに分けて画像で保存できます。<br>
 pythonのファイルがある場所に、今の日付時間のフォルダーを作成して、その中に保存されます。<br><br>
 
@@ -179,13 +179,13 @@ pythonのファイルがある場所に、今の日付時間のフォルダー�
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex11.gif" alt="作成した動画をフレームごとに分けて画像で保存" title="Tkinterでトリミング動画をフレームに分けて保存"><br><br>
 <br>
 
-【角度情報を数値で取得】<br>
+【12.角度情報を数値で取得】<br>
 動画で表示するだけでなく、数値で位置座標を取得したい場合はコマンドプロンプトから取得することができます。<br><br>
 
-<img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex12.gif" alt="角度情報を数値で取得" title="角度情報を数値で取得する"><br><br>
+<img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex13.gif" alt="角度情報を数値で取得" title="角度情報を数値で取得する"><br><br>
 <br>
 
-【最後に全体の確認】<br>
+【13.最後に全体の確認】<br>
 ここで最後に、全体の一連の流れを確認しましょう。<br><br>
 
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex12.gif" alt="最後に全体の確認" title="最後に全体の確認"><br><br>
