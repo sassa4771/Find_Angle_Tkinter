@@ -12,7 +12,7 @@ https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/main<br>
 
 このFind Angleツールを作るまでに学んだ機能などをレッスンとして<br>
 lesson1~27までまとめてあるので参考にしてみてください。<br>
-https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/tk_lesson<br>
+<a href='https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/tk_lesson'>Tkinter Lesson</a><br>
 <参考サイト：https://www.youtube.com/watch?v=sAu7uxW85_Y&list=PL1FgJUcJJ03sm4WuVCPMbT0RIf2uMmoAj&index=17>
 
 ## 目次
