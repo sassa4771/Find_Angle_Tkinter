@@ -42,10 +42,15 @@ CPU:Corei7<br>
 ・numpy
 ・PIL(Pillow)
 
-<br><br>
+<br>
 【Anaconda環境データ】<br>
 今回使用しているAnacondaの環境データ(yamlファイル）もGitにあるので利用してみてください。<br>
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/Anaconda%20Environment<br><br>
+
+【撮影環境】<br>
+・背景を黒色<br>
+・目標点を白色<br>
+にする必要がある。（※二値化→輪郭抽出で座標を特定するため）<br><br>
 
 ## ③ツールの使い方とTkinterの機能紹介
 【1.ファイルを開く】<br>
