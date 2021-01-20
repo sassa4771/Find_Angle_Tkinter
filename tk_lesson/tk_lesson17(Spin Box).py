@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import scrolledtext
 
-
+# ※python3.6でしか動作しないので注意
 
 class Root(Tk):
     def __init__(self):

@@ -10,11 +10,11 @@ class Root(Tk):
         self.createCanvasImage()
     
     def createCanvasImage(self):
-        canvas = Canvas(self, bg = "black", height = 250, width = 300)
+        img = Image.open('Books.jpg')
+        canvas = Canvas(self, bg = "black", height = img.height, width = img.width)
 
         canvas.pack(expand = YES, fill = BOTH)
 
-        img = Image.open('mount.jpg')
         canvas.image = ImageTk,PhotoImage(img)
         canvas.create_image(0,0, image = canvas.image, anchor = 'pw')
 
