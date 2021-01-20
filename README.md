@@ -1,4 +1,4 @@
-# アーム角度を自動検出して動画に追加する。(Tkinterで使いやすい画像処理ツールを作る。）
+# Pythonでアーム角度を自動検出して動画に追加する。(Tkinterで使いやすい画像処理ツールを作る。）※Tkinterが学べる
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/main<br>
 ここのファイルの中身説明↑
 
