@@ -175,7 +175,7 @@ class Root(Tk):
             self.label3.configure(foreground = 'black')
 
             i=0
-            while (i < count):
+            while (cap.isOpened()):
                 # 大きすぎる画像を処理するのに必要
                 # cv2.namedWindow("output", cv2.WINDOW_NORMAL)  
                 frame_num = cap.get(cv2.CAP_PROP_POS_FRAMES)
@@ -185,21 +185,23 @@ class Root(Tk):
                 # if(frame_num > end_frame):
                 #     break
 
+                if(frame is None):
+                    break
                 # リサイズ
                 if(W > 1000):
                     frame = cv2.resize(frame, (int(W/resize_value), int(H/resize_value)))                    # Resize 
-                    
+                
                 
                 if(radSelected == 1):
                     cv2.imshow("frame", frame)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
 
                 elif(radSelected == 2):
                     # グレースケール化          
                     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     cv2.imshow("frame", frame_gray)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
                 elif(radSelected == 3):
                     # グレースケール化          
@@ -214,7 +216,7 @@ class Root(Tk):
                     _,frame_BW = cv2.threshold(first_frame_trim_gray_Smoothing,thresh,maxval,cv2.THRESH_BINARY)
 
                     cv2.imshow("frame", frame_BW)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
                 else:
                     self.label3.configure(text = "Error")
@@ -276,7 +278,7 @@ class Root(Tk):
             f_y = 0
 
             i=0
-            while (i < count):
+            while (cap.isOpened()):
                 # 大きすぎる画像を処理するのに必要
                 # cv2.namedWindow("output", cv2.WINDOW_NORMAL)  
                 frame_num = cap.get(cv2.CAP_PROP_POS_FRAMES)
@@ -286,6 +288,8 @@ class Root(Tk):
                 # if(frame_num > end_frame):
                 #     break
 
+                if(frame is None):
+                    break
                 # リサイズ
                 if(W > 1000):
                     frame = cv2.resize(frame, (int(W/resize_value), int(H/resize_value)))                    # Resize 
@@ -324,7 +328,7 @@ class Root(Tk):
                     
                     
                     cv2.imshow("frame", first_frame_trim)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
 
                 elif(radSelected == 2):
@@ -332,7 +336,7 @@ class Root(Tk):
                     frame_gray = cv2.cvtColor(first_frame_trim, cv2.COLOR_BGR2GRAY)
                     
                     cv2.imshow("frame", frame_gray)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
                 elif(radSelected == 3):
                     # グレースケール化          
@@ -347,7 +351,7 @@ class Root(Tk):
                     _,frame_BW = cv2.threshold(first_frame_trim_gray_Smoothing,thresh,maxval,cv2.THRESH_BINARY)
 
                     cv2.imshow("frame", frame_BW)
-                    cv2.waitKey(2)
+                    cv2.waitKey(15)
                     i += 1
                 else:
                     self.label_check_cut.configure(text = "Error")
@@ -424,7 +428,7 @@ class Root(Tk):
             f_y = 0
 
             i=0
-            while (i < count):
+            while (cap.isOpened()):
                 # プログラスバー
                 self.progress_bar["value"] = i * 100 / count + 5
                 self.progress_bar.update()
@@ -438,6 +442,11 @@ class Root(Tk):
                 # if(frame_num > end_frame):
                 #     break
 
+                if(frame is None):
+                    # プログラスバー
+                    self.progress_bar["value"] = 100
+                    self.progress_bar.update()
+                    break
                 # リサイズ
                 if(W > 1000):
                     frame = cv2.resize(frame, (int(W/resize_value), int(H/resize_value)))                    # Resize 
@@ -493,7 +502,7 @@ class Root(Tk):
                     # 動画へフレーム追加
                     video.write(frame) 
 
-                cv2.waitKey(2)
+                cv2.waitKey(15)
                 i += 1
 
             if(self.write_bool.get() == True):
