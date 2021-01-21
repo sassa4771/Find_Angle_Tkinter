@@ -3,6 +3,6 @@ cd ./
 rem 仮想環境の立ち上げ
 
 call C:\Users\ユーザー\Anaconda3\Scripts\activate.bat
-call activate tkinter
+call activate find_arm_angle
 rem .pyファイルの実行
 python Find_Angle.py
