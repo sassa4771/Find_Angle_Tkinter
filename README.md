@@ -47,6 +47,15 @@ CPU:Corei7<br>
 今回使用しているAnacondaの環境データ(yamlファイル）もGitにあるので利用してみてください。<br>
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/Anaconda%20Environment<br><br>
 
+Anaconda環境インストールコマンド<br>
+```
+cd 【find_angle.yamlがあるとディレクトリ】
+conda env create -n find_arm_angle -f find_angle.yaml
+```
+環境をインストールしたらmainファイルの<a href='https://github.com/sassa4771/Find_Arm_Angle_Tkinter/tree/main/main'>run.bat</a>を起動するとソフトが起動できる。<br>
+<img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/run.PNG" alt="run.batの実行" title="run.batの実行"><br><br>
+
+
 【撮影環境】<br>
 ・背景を黒色<br>
 ・目標点を白色<br>
@@ -124,7 +133,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex6.gif" alt="トリミングした動画を表示する" title="Tkinterでトリミング動画の表示"><br><br>
 <br>
 
-【7.児童追従が失敗する場合の例】<br>
+【7.自動追従が失敗する場合の例】<br>
 仮にトリミング範囲を大きくしてみましょう。<br>
 そうすると、目標点と思われる場所がプログラム上で判断できなくなってしまうため、手にも赤枠が表示されているのがわかると思います。<br>
 これを避けるために、目標点の自動追従範囲を絞る必要があります。<br><br>
