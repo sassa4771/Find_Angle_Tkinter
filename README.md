@@ -1,4 +1,4 @@
-# Pythonでアーム角度を自動検出して動画に追加する。(Tkinterで使いやすい画像処理ツールを作る。）※Tkinterが学べる
+# Pythonでアーム角度を自動検出して動画に追加する。<br>(Tkinterで使いやすい画像処理ツールを作る。）※Tkinterが学べる
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/main<br>
 ここのファイルの中身説明↑
 
@@ -17,7 +17,7 @@ lesson1~27までまとめてあるので参考にしてみてください。<br>
 
 ## 目次
 ①Tkinterとは？<br>
-②必要なライブラリ・動作環境<br>
+②必要なライブラリ・動作環境(※とりあえず動かしてみたい人はここから)<br>
 ③ツールの使い方とTkinterの機能紹介<br>
 ④Tkinter学び方(参考スクリプト付き)<br>
 ⑤本ツールの作り方（簡易版）<br>
@@ -46,6 +46,15 @@ CPU:Corei7<br>
 【Anaconda環境データ】<br>
 今回使用しているAnacondaの環境データ(yamlファイル）もGitにあるので利用してみてください。<br>
 https://github.com/sassa4771/Find_Angle_Tkinter/tree/main/Anaconda%20Environment<br><br>
+
+Anaconda環境インストールコマンド<br>
+```
+cd 【find_angle.yamlがあるとディレクトリ】
+conda env create -n find_arm_angle -f find_angle.yaml
+```
+環境をインストールしたらmainファイルの<a href='https://github.com/sassa4771/Find_Arm_Angle_Tkinter/tree/main/main'>run.bat</a>を起動するとソフトが起動できる。<br>
+<img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/run.PNG" alt="run.batの実行" title="run.batの実行"><br><br>
+
 
 【撮影環境】<br>
 ・背景を黒色<br>
@@ -124,7 +133,7 @@ Webカメラでeye tracking（アイトラッキング・視線計測）をす�
 <img src="https://github.com/sassa4771/Find_Angle_Tkinter/blob/main/Gif/ex6.gif" alt="トリミングした動画を表示する" title="Tkinterでトリミング動画の表示"><br><br>
 <br>
 
-【7.児童追従が失敗する場合の例】<br>
+【7.自動追従が失敗する場合の例】<br>
 仮にトリミング範囲を大きくしてみましょう。<br>
 そうすると、目標点と思われる場所がプログラム上で判断できなくなってしまうため、手にも赤枠が表示されているのがわかると思います。<br>
 これを避けるために、目標点の自動追従範囲を絞る必要があります。<br><br>
