@@ -16,7 +16,7 @@ lesson1~27までまとめてあるので参考にしてみてください。<br>
 <参考サイト：https://www.youtube.com/watch?v=sAu7uxW85_Y&list=PL1FgJUcJJ03sm4WuVCPMbT0RIf2uMmoAj&index=17>
 
 ## 目次
-<a href='https://github.com/sassa4771/Find_Arm_Angle_Tkinter/blob/main/README.md#tkinter%E3%81%A8%E3%81%AF'>①Tkinterとは？</a><br>
+①Tkinterとは？<br>
 ②必要なライブラリ・動作環境(※とりあえず動かしてみたい人はここから)<br>
 ③ツールの使い方とTkinterの機能紹介<br>
 ④Tkinter学び方(参考スクリプト付き)<br>
