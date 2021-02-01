@@ -14,6 +14,7 @@ from tkinter import scrolledtext
 from PIL import Image, ImageTk
 import tk_cut_class
 import tk_mouse_tracking_class
+import tk_Rtrim_class
 
 
 class Root(Tk):
@@ -21,7 +22,7 @@ class Root(Tk):
         super(Root, self).__init__()
         self.title("Find Angle Tool")
         self.iconbitmap('./icon.ico')
-        self.minsize(640,400)
+        self.minsize(640,420)
         # self.configure(background = '#4D4D4D')
 
         # Parts Position
@@ -42,6 +43,13 @@ class Root(Tk):
         self.lp7 = 320+self.rp_y
         self.lp8 = 360+self.rp_y
 
+        # Rotation Trim
+        self.trim_topx = 500
+        self.trim_topy = 300
+        self.trim_botx = 800
+        self.trim_boty = 1000
+        self.trim_bool = False
+
         # finish level
         self.first_l = False
         self.second_l = False
@@ -55,6 +63,8 @@ class Root(Tk):
         # Save Data 
         self.write_bool = BooleanVar()
         self.video_bool = BooleanVar()
+        self.rotation_bool = BooleanVar()
+        self.angle = StringVar()
         
         # cut range value
         self.topx, self.topy, self.botx, self.boty = 0, 0, 0, 0
@@ -143,11 +153,23 @@ class Root(Tk):
                 
         # Save Video
         self.check_Video = ttk.Checkbutton(self, text = "Video Save", variable=self.video_bool)
-        self.check_Video.place(x = self.rp_x + 450, y = self.lp7+3)
+        self.check_Video.place(x = self.rp_x + 430, y = self.lp7+3)
+        
+        # Rotation
+        self.check_Rotation = ttk.Checkbutton(self, text = "Rotation", variable=self.rotation_bool)
+        self.check_Rotation.place(x = self.rp_x + 520, y = self.lp7+3)
+
+        # Angle Input Label
+        self.label_AngleImput = ttk.Label(self, text = "Angle:")
+        self.label_AngleImput.place(x = self.rp_x + 540, y = self.lp7+25)
+
+        # Angle Input
+        self.AngleImputText = ttk.Entry(self, width = 5, textvariable = self.angle)
+        self.AngleImputText.place(x = self.rp_x + 580, y = self.lp7+25)
 
         # Progress Bar
         self.progress_bar = ttk.Progressbar(self, orient = 'horizontal', length=620, mode='determinate')
-        self.progress_bar.place(x = self.rp_x, y = self.lp8)
+        self.progress_bar.place(x = self.rp_x, y = self.lp8+15)
 
     def ShowImage(self):
         if(self.first_l == False):     
@@ -356,8 +378,20 @@ class Root(Tk):
                 else:
                     self.label_check_cut.configure(text = "Error")
                     self.label_check_cut.configure(foreground = 'red')
-                     
+    
+    def Filter_Frame(self):
+        if(self.rotation_bool.get()):
+            self.TrimImage()
+        else:
+            self.DrawLine()
+
     def DrawLine(self):
+        
+        def get_angle(x1, y1, x2, y2, x3, y3):
+            angle = (math.atan2(y1 - y2, x1 - x2) - math.atan2(y3 - y2, x3 - x2)) / math.pi * 180
+
+            return angle
+
         if(self.first_l == False):     
             self.label_make_frame.configure(text = "Please Select File")
             self.label_make_frame.configure(foreground = 'red')
@@ -395,6 +429,17 @@ class Root(Tk):
 
             c_x = self.pivot_x
             c_y = self.pivot_y
+            
+            # ---------------------------------                
+            # 回転ゲイン
+            rot_gain = 0              #left:75 ,right:105
+            # 最終トリミングサイズ
+            trim_width = 200            #left:150 ,right:150
+            trim_height = 450           #left:300 ,right:300
+            # 最終トリミング位置
+            trim_x = 0                  #left:0 ,right:0
+            trim_y = 450                #left:250 ,right:350
+            # ---------------------------------
             # ---------------------
 
             if(self.write_bool.get() or self.video_bool.get()):
@@ -418,14 +463,21 @@ class Root(Tk):
             if(self.video_bool.get() == True):
                 # 動画作成用変数
                 frame_rate = 30.0
-                width = int(W/resize_value)
-                height = int(H/resize_value)
+                if(self.rotation_bool.get()):
+                    width = int(trim_width)
+                    height = int(trim_height)
+                else:    
+                    width = int(W/resize_value)
+                    height = int(H/resize_value)
+
                 fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
                 video = cv2.VideoWriter(new_dir_path + '/movie.mp4', fourcc, frame_rate, (width, height))
 
             # 座標
             f_x = 0
             f_y = 0
+            s_x = 0
+            s_y = 0
 
             i=0
             while (cap.isOpened()):
@@ -473,23 +525,84 @@ class Root(Tk):
                         cv2.drawContours(first_frame_trim, [cnt], -1, (0,0,255),1) #輪郭の表示
                         # cv2.circle(first_frame_trim, (int(x+w/2), int(y+h/2)), 2, (255, 0, 0), 5) #円で表示
                         #代入→元の画像の座標に変換
-                        f_x = int(x+w/2)+white_trim_y
-                        f_y = int(y+h/2)+white_trim_x
+                        s_x = int(x+w/2)+white_trim_y
+                        s_y = int(y+h/2)+white_trim_x
                                 
                         #　回転中心の表示
                         # cv2.circle(first_frame_trim, (x, y), 5, (0, 255, 0), 2)
                         
-                        print("Current Frame：" + str(frame_num) + ", Rotation Position：(" + str(f_x) + "," + str(f_y) + ")" + ", Pivot Position：(" + str(self.pivot_x) + "," + str(self.pivot_y) + ")")
+                        print("Current Frame：" + str(frame_num) + ", Rotation Position：(" + str(s_x) + "," + str(s_y) + ")" + ", Pivot Position：(" + str(self.pivot_x) + "," + str(self.pivot_y) + ")")
                 
                 #　支点の表示
                 cv2.circle(frame, (c_x, c_y), 2, (0, 0, 255), 5)
                 #　回転中心の表示
-                cv2.circle(frame, (f_x, f_y), 2, (0, 255, 255), 5)
+                cv2.circle(frame, (s_x, s_y), 2, (0, 255, 255), 5)
                 #　線を引く
-                cv2.line(frame, (c_x, c_y), (f_x, f_y), (255, 255, 255), thickness=2, lineType=cv2.LINE_4)
+                cv2.line(frame, (c_x, c_y), (s_x, s_y), (255, 255, 255), thickness=2, lineType=cv2.LINE_4)
                 #　画像の表示    
                 # cv2.imshow("frame_trim",first_frame_trim)
                 # cv2.imshow("frame",frame)
+
+                if(frame_num == 0):
+                    f_x = s_x
+                    f_y = s_y
+
+            # 回転処理
+                if(self.rotation_bool.get()):     
+
+                    if(self.angle.get() != ""):
+                        rot_gain = int(self.angle.get())
+
+                    h, w = frame.shape[:2]
+
+                    if(h>w):
+                        w=h
+                    else:
+                        h=w
+
+                    # 回転角の指定(二フレーム以降)
+                    if(frame_num > 0):
+                        angle = get_angle(s_x,s_y,c_x,c_y,f_x,f_y) + rot_gain
+                        print('角度：{:.1f}°'.format(angle))
+                        angle_rad = angle/180.0*numpy.pi
+                    else:
+                        # 回転角の指定
+                        angle = 0 + rot_gain
+                        angle_rad = angle/180.0*numpy.pi
+
+                    # 回転後の画像サイズを計算
+                    w_rot = w+100
+                    h_rot = h+100
+                    size_rot = (w_rot, h_rot)
+
+                    # 元画像の中心を軸に回転する
+                    center = (c_x, c_y)
+                    scale = 1.0
+                    rotation_matrix = cv2.getRotationMatrix2D(center, angle, scale)
+
+                    # 平行移動を加える (rotation + translation)
+                    affine_matrix = rotation_matrix.copy()
+                    affine_matrix[0][2] = affine_matrix[0][2] -c_x + w_rot/2
+                    affine_matrix[1][2] = affine_matrix[1][2] -c_y + h_rot/2
+
+                    first_rot = cv2.warpAffine(frame, affine_matrix, size_rot, flags=cv2.INTER_CUBIC)
+                    
+                    # if(self.trim_topx > self.trim_botx):
+                    #     trim_x = self.trim_topx
+                    #     trim_width = self.trim_topx - self.trim_botx
+                    # else:
+                    #     trim_x = self.trim_botx
+                    #     trim_width = self.trim_botx - self.trim_topx
+
+                    # if(self.trim_topy > self.trim_boty):
+                    #     trim_y = self.trim_topy
+                    #     trim_height = self.trim_topy - self.trim_boty
+                    # else:
+                    #     trim_y = self.trim_boty
+                    #     trim_height = self.trim_boty - self.trim_topy
+
+                    # 最後のトリミング
+                    frame = first_rot[trim_x:trim_x + trim_height,trim_y:trim_y+trim_width]
 
                 
                 cv2.imshow("frame", frame)
@@ -516,7 +629,184 @@ class Root(Tk):
             
             self.label_make_frame.configure(text = "Complete")
             self.label_make_frame.configure(foreground = 'Blue')
-                             
+    
+    # うまくいかない↓  
+    def TrimImage(self):
+        
+        def get_angle(x1, y1, x2, y2, x3, y3):
+            angle = (math.atan2(y1 - y2, x1 - x2) - math.atan2(y3 - y2, x3 - x2)) / math.pi * 180
+
+            return angle
+
+        if(self.first_l == False):     
+            self.label_make_frame.configure(text = "Please Select File")
+            self.label_make_frame.configure(foreground = 'red')
+
+        elif(self.second_l == False):
+            self.label_make_frame.configure(text = "Please Select Filter")
+            self.label_make_frame.configure(foreground = 'red')
+
+        elif(self.third_l == False):
+            self.labellabel_make_frame_check_cut.configure(text = "Please Set Cut Range")
+            self.label_make_frame.configure(foreground = 'red')
+
+        elif(self.forth_l == False):
+            self.label_make_frame.configure(text = "Please Set Pivot Position")
+            self.label_make_frame.configure(foreground = 'red')
+
+        else:
+            # 【変更可能な変数】
+            # --------------------- 
+            if(self.boty > self.topy):
+                # 白点トリミングサイズ
+                white_trim_width = self.boty - self.topy       #left:60 ,right:60
+                # 白点トリミング位置
+                white_trim_x = self.topy         #left:100 ,right:300
+            else:
+                white_trim_width = self.topy - self.boty       #left:60 ,right:60
+                white_trim_x = self.boty         #left:100 ,right:300
+            
+            if(self.botx > self.topx):
+                white_trim_height = self.botx - self.topx     #left:120,right:120
+                white_trim_y = self.topx            #left:0 ,right:0
+            else:
+                white_trim_height = self.topx - self.botx   #left:120,right:120
+                white_trim_y = self.botx            #left:0 ,right:0
+
+            c_x = self.pivot_x
+            c_y = self.pivot_y
+            # ---------------------
+
+            radSelected = self.radValues.get()
+            resize_value = self.resize.get()
+
+            cap = cv2.VideoCapture(self.filename)
+
+            # Image Width
+            W = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            # Image Height
+            H = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            # All Frame
+            count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            
+
+            # 座標
+            f_x = 0
+            f_y = 0
+            s_x = 0
+            s_y = 0
+
+            i=0
+            while (cap.isOpened()):
+                
+                # 大きすぎる画像を処理するのに必要
+                # cv2.namedWindow("output", cv2.WINDOW_NORMAL)  
+                frame_num = cap.get(cv2.CAP_PROP_POS_FRAMES)
+                _, frame = cap.read()
+                # frame = cv2.imread('a.PNG')
+
+                if(frame_num == 0):
+                    # リサイズ
+                    if(W > 1000):
+                        frame = cv2.resize(frame, (int(W/resize_value), int(H/resize_value)))                    # Resize 
+                    
+                    #　トリミング範囲補正
+                    first_frame_trim = frame[white_trim_x:white_trim_x + white_trim_width,white_trim_y:white_trim_y + white_trim_height]
+
+                    cv2.imshow("frame",first_frame_trim)
+                    # グレースケール化          
+                    first_frame_trim_gray = cv2.cvtColor(first_frame_trim, cv2.COLOR_BGR2GRAY)
+                    
+                    #平滑化（ぼかし）Smoothing
+                    first_frame_trim_gray_Smoothing = cv2.GaussianBlur(first_frame_trim_gray,(7,7),0)
+
+                    # 2値化処理
+                    thresh = 180
+                    maxval = 255
+                    _,frame_BW = cv2.threshold(first_frame_trim_gray_Smoothing,thresh,maxval,cv2.THRESH_BINARY)
+
+                    #輪郭の表示
+                    _, first_frame_trim_gray_Smoothing_bw_contours, _ = cv2.findContours(frame_BW, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                    first_frame_trim_gray_Smoothing_bw_contours = sorted(first_frame_trim_gray_Smoothing_bw_contours, key=lambda x: cv2.contourArea(x), reverse=False) #輪郭が一番小さい順に並べる
+                    for cnt in first_frame_trim_gray_Smoothing_bw_contours:
+                            (x, y, w, h) = cv2.boundingRect(cnt)
+                            cv2.drawContours(first_frame_trim, [cnt], -1, (0,0,255),1) #輪郭の表示
+                            # cv2.circle(first_frame_trim, (int(x+w/2), int(y+h/2)), 2, (255, 0, 0), 5) #円で表示
+                            #代入→元の画像の座標に変換
+                            s_x = int(x+w/2)+white_trim_y
+                            s_y = int(y+h/2)+white_trim_x
+                                    
+                            #　回転中心の表示
+                            # cv2.circle(first_frame_trim, (x, y), 5, (0, 255, 0), 2)
+                            
+                            print("Current Frame：" + str(frame_num) + ", Rotation Position：(" + str(s_x) + "," + str(s_y) + ")" + ", Pivot Position：(" + str(self.pivot_x) + "," + str(self.pivot_y) + ")")
+                    
+                    #　支点の表示
+                    cv2.circle(frame, (c_x, c_y), 2, (0, 0, 255), 5)
+                    #　回転中心の表示
+                    cv2.circle(frame, (s_x, s_y), 2, (0, 255, 255), 5)
+                    #　線を引く
+                    cv2.line(frame, (c_x, c_y), (s_x, s_y), (255, 255, 255), thickness=2, lineType=cv2.LINE_4)
+                    #　画像の表示    
+                    # cv2.imshow("frame_trim",first_frame_trim)
+                    # cv2.imshow("frame",frame)
+
+                    if(frame_num == 0):
+                        f_x = s_x
+                        f_y = s_y
+
+                # 回転処理   
+                    # ---------------------------------                
+                    # 回転ゲイン
+                    rot_gain = 0              #left:75 ,right:105
+                    # 最終トリミングサイズ
+                    trim_width = 600*3            #left:150 ,right:150
+                    trim_height = 400*2           #left:300 ,right:300
+                    # 最終トリミング位置
+                    trim_x = 0                  #left:0 ,right:0
+                    trim_y = 0                #left:250 ,right:350
+                    # ---------------------------------
+
+                    if(self.angle.get() != ""):
+                        rot_gain = int(self.angle.get())
+
+                    h, w = frame.shape[:2]
+
+                    if(h>w):
+                        w=h
+                    else:
+                        h=w
+
+                    # 回転角の指定(二フレーム以降)
+                    if(frame_num > 0):
+                        angle = get_angle(s_x,s_y,c_x,c_y,f_x,f_y) + rot_gain
+                        print('角度：{:.1f}°'.format(angle))
+                        angle_rad = angle/180.0*numpy.pi
+                    else:
+                        # 回転角の指定
+                        angle = 0 + rot_gain
+                        angle_rad = angle/180.0*numpy.pi
+
+                    # 回転後の画像サイズを計算
+                    w_rot = w+100
+                    h_rot = h+100
+                    size_rot = (w_rot, h_rot)
+
+                    # 元画像の中心を軸に回転する
+                    center = (c_x, c_y)
+                    scale = 1.0
+                    rotation_matrix = cv2.getRotationMatrix2D(center, angle, scale)
+
+                    # 平行移動を加える (rotation + translation)
+                    affine_matrix = rotation_matrix.copy()
+                    affine_matrix[0][2] = affine_matrix[0][2] -c_x + w_rot/2
+                    affine_matrix[1][2] = affine_matrix[1][2] -c_y + h_rot/2
+
+                    first_rot = cv2.warpAffine(frame, affine_matrix, size_rot, flags=cv2.INTER_CUBIC)
+                
+                    # トリミングクラス呼び出し        
+                    # CRTT = tk_Rtrim_class.Create_Rotation_Trim_Tool(self.cv2pil(first_rot), self)
+                    
     def radioButton(self):
         self.radValues = IntVar()
 
