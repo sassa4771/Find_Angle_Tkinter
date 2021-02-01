@@ -1,6 +1,5 @@
 import cv2
 import numpy as numpy
-import dlib
 import math
 from PIL import Image
 import os
