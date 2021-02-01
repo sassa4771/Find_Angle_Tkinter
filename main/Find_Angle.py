@@ -21,7 +21,7 @@ class Root(Tk):
         super(Root, self).__init__()
         self.title("Find Angle Tool")
         self.iconbitmap('./icon.ico')
-        self.minsize(640,420)
+        self.minsize(640,430)
         # self.configure(background = '#4D4D4D')
 
         # Parts Position
@@ -43,10 +43,10 @@ class Root(Tk):
         self.lp8 = 360+self.rp_y
 
         # Rotation Trim
-        self.trim_topx = 500
-        self.trim_topy = 300
-        self.trim_botx = 800
-        self.trim_boty = 1000
+        self.trim_topx = 0
+        self.trim_topy = 0
+        self.trim_botx = 0
+        self.trim_boty = 0
         self.trim_bool = False
 
         # finish level
@@ -139,7 +139,7 @@ class Root(Tk):
 
         # ----seventh column----
         # button
-        self.button_make_frame = ttk.Button(self, text = "Make Frame Image", command=self.DrawLine)
+        self.button_make_frame = ttk.Button(self, text = "Make Frame Image", command=self.Filter_Frame)
         self.button_make_frame.place(x = self.rp_x, y = self.lp7)
 
         # Log
@@ -156,19 +156,19 @@ class Root(Tk):
         
         # Rotation
         self.check_Rotation = ttk.Checkbutton(self, text = "Rotation", variable=self.rotation_bool)
-        self.check_Rotation.place(x = self.rp_x + 520, y = self.lp7+3)
+        self.check_Rotation.place(x = self.rp_x + 300, y = self.lp7+40)
 
         # Angle Input Label
         self.label_AngleImput = ttk.Label(self, text = "Angle:")
-        self.label_AngleImput.place(x = self.rp_x + 540, y = self.lp7+25)
+        self.label_AngleImput.place(x = self.rp_x + 430, y = self.lp7+40)
 
-        # Angle Input
-        self.AngleImputText = ttk.Entry(self, width = 5, textvariable = self.angle)
-        self.AngleImputText.place(x = self.rp_x + 580, y = self.lp7+25)
+        #Angle Input Slider
+        self.Angle_Slider = Scale(self, from_=-360, to=360, orient=HORIZONTAL, length=140)
+        self.Angle_Slider.place(x = self.rp_x + 470, y = self.lp7+20)
 
         # Progress Bar
         self.progress_bar = ttk.Progressbar(self, orient = 'horizontal', length=620, mode='determinate')
-        self.progress_bar.place(x = self.rp_x, y = self.lp8+15)
+        self.progress_bar.place(x = self.rp_x, y = self.lp8+30)
 
     def ShowImage(self):
         if(self.first_l == False):     
@@ -425,11 +425,10 @@ class Root(Tk):
             else:
                 white_trim_height = self.topx - self.botx   #left:120,right:120
                 white_trim_y = self.botx            #left:0 ,right:0
-
+    
             c_x = self.pivot_x
             c_y = self.pivot_y
-            
-            # ---------------------------------                
+                        
             # 回転ゲイン
             rot_gain = 0              #left:75 ,right:105
             # 最終トリミングサイズ
@@ -438,7 +437,6 @@ class Root(Tk):
             # 最終トリミング位置
             trim_x = 0                  #left:0 ,right:0
             trim_y = 450                #left:250 ,right:350
-            # ---------------------------------
             # ---------------------
 
             if(self.write_bool.get() or self.video_bool.get()):
@@ -458,6 +456,23 @@ class Root(Tk):
             # All Frame
             count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
             
+
+            if(self.rotation_bool.get()):   
+                if(self.trim_topx > self.trim_botx):
+                    trim_x = self.trim_botx
+                    trim_width = self.trim_topx - self.trim_botx
+                else:
+                    trim_x = self.trim_topx
+                    trim_width = self.trim_botx - self.trim_topx
+
+                if(self.trim_topy > self.trim_boty):
+                    trim_y = self.trim_boty
+                    trim_height = self.trim_topy - self.trim_boty
+                else:
+                    trim_y = self.trim_topy
+                    trim_height = self.trim_boty - self.trim_topy
+
+                print("trim_x: " + str(trim_x) + ", trim_y: " + str(trim_y) + ", trim_width: " + str(trim_width) +  ", trim_height: " + str(trim_height))
         
             if(self.video_bool.get() == True):
                 # 動画作成用変数
@@ -549,8 +564,7 @@ class Root(Tk):
             # 回転処理
                 if(self.rotation_bool.get()):     
 
-                    if(self.angle.get() != ""):
-                        rot_gain = int(self.angle.get())
+                    rot_gain = int(self.Angle_Slider.get())
 
                     h, w = frame.shape[:2]
 
@@ -562,7 +576,7 @@ class Root(Tk):
                     # 回転角の指定(二フレーム以降)
                     if(frame_num > 0):
                         angle = get_angle(s_x,s_y,c_x,c_y,f_x,f_y) + rot_gain
-                        print('角度：{:.1f}°'.format(angle))
+                        print('Angle：{:.1f}°'.format(angle))
                         angle_rad = angle/180.0*numpy.pi
                     else:
                         # 回転角の指定
@@ -585,26 +599,15 @@ class Root(Tk):
                     affine_matrix[1][2] = affine_matrix[1][2] -c_y + h_rot/2
 
                     first_rot = cv2.warpAffine(frame, affine_matrix, size_rot, flags=cv2.INTER_CUBIC)
-                    
-                    # if(self.trim_topx > self.trim_botx):
-                    #     trim_x = self.trim_topx
-                    #     trim_width = self.trim_topx - self.trim_botx
-                    # else:
-                    #     trim_x = self.trim_botx
-                    #     trim_width = self.trim_botx - self.trim_topx
-
-                    # if(self.trim_topy > self.trim_boty):
-                    #     trim_y = self.trim_topy
-                    #     trim_height = self.trim_topy - self.trim_boty
-                    # else:
-                    #     trim_y = self.trim_boty
-                    #     trim_height = self.trim_boty - self.trim_topy
+                    frame = first_rot
 
                     # 最後のトリミング
-                    frame = first_rot[trim_x:trim_x + trim_height,trim_y:trim_y+trim_width]
-
+                    if(self.rotation_bool.get()):   
+                        # cv2.rectangle(frame, (self.trim_topx, self.trim_topy), (self.trim_botx, self.trim_boty), (255,255,255))
+                        # cv2.rectangle(frame, (trim_x, trim_y), (trim_x + trim_width, trim_y + trim_height), (255,255,255))
+                        frame = frame[trim_y:trim_y + trim_height, trim_x:trim_x + trim_width]
                 
-                cv2.imshow("frame", frame)
+                cv2.imshow("imframe", frame)
                 
                 if(self.write_bool.get() == True):
                     # 処理画像の表示と保存
@@ -629,7 +632,6 @@ class Root(Tk):
             self.label_make_frame.configure(text = "Complete")
             self.label_make_frame.configure(foreground = 'Blue')
     
-    # うまくいかない↓  
     def TrimImage(self):
         
         def get_angle(x1, y1, x2, y2, x3, y3):
@@ -712,7 +714,7 @@ class Root(Tk):
                     #　トリミング範囲補正
                     first_frame_trim = frame[white_trim_x:white_trim_x + white_trim_width,white_trim_y:white_trim_y + white_trim_height]
 
-                    cv2.imshow("frame",first_frame_trim)
+                    # cv2.imshow("frame",first_frame_trim)
                     # グレースケール化          
                     first_frame_trim_gray = cv2.cvtColor(first_frame_trim, cv2.COLOR_BGR2GRAY)
                     
@@ -758,16 +760,9 @@ class Root(Tk):
                     # ---------------------------------                
                     # 回転ゲイン
                     rot_gain = 0              #left:75 ,right:105
-                    # 最終トリミングサイズ
-                    trim_width = 600*3            #left:150 ,right:150
-                    trim_height = 400*2           #left:300 ,right:300
-                    # 最終トリミング位置
-                    trim_x = 0                  #left:0 ,right:0
-                    trim_y = 0                #left:250 ,right:350
                     # ---------------------------------
 
-                    if(self.angle.get() != ""):
-                        rot_gain = int(self.angle.get())
+                    rot_gain = int(self.Angle_Slider.get())
 
                     h, w = frame.shape[:2]
 
@@ -802,10 +797,12 @@ class Root(Tk):
                     affine_matrix[1][2] = affine_matrix[1][2] -c_y + h_rot/2
 
                     first_rot = cv2.warpAffine(frame, affine_matrix, size_rot, flags=cv2.INTER_CUBIC)
-                
+
+                    # cv2.imshow("frame", first_rot)
                     # トリミングクラス呼び出し        
-                    # CRTT = tk_Rtrim_class.Create_Rotation_Trim_Tool(self.cv2pil(first_rot), self)
-                    
+                    CRTT = tk_Rtrim_class.Create_Rotation_Trim_Tool(self.cv2pil(first_rot), self)
+                    break
+
     def radioButton(self):
         self.radValues = IntVar()
 
