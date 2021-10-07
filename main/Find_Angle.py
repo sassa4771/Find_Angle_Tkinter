@@ -20,7 +20,7 @@ class Root(Tk):
     def __init__(self):
         super(Root, self).__init__()
         self.title("Find Angle Tool")
-        self.iconbitmap('./icon.ico')
+        # self.iconbitmap('wm','./icon.ico',self._w,bitmap)
         self.minsize(640,430)
         # self.configure(background = '#4D4D4D')
 
